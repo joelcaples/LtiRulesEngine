@@ -1,4 +1,5 @@
 //using LtiRulesEngine.dto;
+using LtiRulesEngine.dto;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -86,7 +87,7 @@ namespace LtiRulesEngine {
         }
 
 
-        public async Task<string> Colors(string data) {
+        public async Task<RulesEngineResponse> Colors(string data) {
 
             //var workflows = new List<Workflow>() {
             //    new Workflow() {
@@ -131,36 +132,44 @@ namespace LtiRulesEngine {
                 var converter = new ExpandoObjectConverter();
                 var expando = JsonConvert.DeserializeObject<ExpandoObject>(data, converter);
                 if (expando == null)
-                    return "Invalid data";
+                    return new RulesEngineResponse() {
+                        ExceptionMessage = "Invalid Data"
+                    };
 
-                dynamic colorData = expando;
+                    dynamic colorData = expando;
 
-                //JObject datas = JObject.Parse(json);
+                    //JObject datas = JObject.Parse(json);
 
-                var inputs = new dynamic[] {
-                colorData
-            };
+                    var inputs = new dynamic[] {
+                    colorData
+                };
 
                 List<RuleResultTree> resultList = await rulesEngine.ExecuteAllRulesAsync("Color", inputs);
 
-                bool outcome = false;
+                //bool outcome = false;
 
                 //Different ways to show test results:
-                outcome = resultList.TrueForAll(r => r.IsSuccess);
+                //outcome = resultList.TrueForAll(r => r.IsSuccess);
+                var response = new RulesEngineResponse() {
+                    IsSuccess = resultList.TrueForAll(r => r.IsSuccess)
+                };
 
                 resultList.OnSuccess((eventName) => {
                     Console.WriteLine($"Result '{eventName}' is as expected.");
-                    outcome = true;
+                    //outcome = true;
                 });
 
                 var msg = System.Environment.NewLine;
                 resultList.OnFail(() => {
-                    outcome = false;
-                    msg += string.Join(System.Environment.NewLine, resultList.Select(r => r.Rule.ErrorMessage));
+                    //outcome = false;
+                    response.Messages.AddRange(resultList.Select(r => r.Rule.ErrorMessage));
                 });
 
-                Console.WriteLine($"Test outcome: {outcome}." + msg);
-                return $"Test outcome: {outcome}." + msg;
+                //Console.WriteLine($"Test outcome: {outcome}." + msg);
+                //return $"Test outcome: {outcome}." + msg;
+
+                return response;
+
             } catch (Exception ex) {
                 throw;
             }

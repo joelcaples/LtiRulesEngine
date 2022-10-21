@@ -1,3 +1,4 @@
+using LtiRulesEngine.dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LtiRulesEngine.Controllers {
@@ -33,7 +34,7 @@ namespace LtiRulesEngine.Controllers {
         }
 
         [HttpGet("colors")]
-        public async Task<string> Colors(string data) {
+        public async Task<RulesEngineResponse> Colors(string data) {
             //return Enumerable.Range(1, 5).Select(index => new RulesService {
             //    Date = DateTime.Now.AddDays(index),
             //    TemperatureC = Random.Shared.Next(-20, 55),

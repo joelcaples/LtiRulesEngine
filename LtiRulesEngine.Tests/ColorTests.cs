@@ -1,10 +1,23 @@
+using Xunit.Abstractions;
+
 namespace LtiRulesEngine.Tests {
     public class ColorTests {
+
+        private readonly ITestOutputHelper output;
+
+        public ColorTests(ITestOutputHelper output) {
+            this.output = output;
+        }
+
         [Fact]
         public async void Test1() {
             var rulesService = new RulesService();
             var result = await rulesService.Colors(getJson("test-01.json"));
-            Console.WriteLine(result);
+
+            Assert.False(result.IsSuccess);
+            Assert.Collection(result.Messages, msg => msg.Contains("Red was not added"));
+
+            result.Messages.ForEach(m => output.WriteLine(m));
         }
 
         private string getJson(string dataFileName) {
