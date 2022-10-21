@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LtiRulesEngine.Controllers {
     [ApiController]
-    [Route("[controller]")]
+    [Route("rules")]
     public class RulesController : ControllerBase {
         private static readonly string[] Summaries = new[]
         {
@@ -15,15 +15,33 @@ namespace LtiRulesEngine.Controllers {
             _logger = logger;
         }
 
-        [HttpGet(Name = "execute")]
-        public void Execute() {
+        [HttpGet("ping")]
+        public string Pint() {
+            return "Pong";
+        }
+
+        [HttpGet("execute")]
+        public async Task<string> Execute() {
             //return Enumerable.Range(1, 5).Select(index => new RulesService {
             //    Date = DateTime.Now.AddDays(index),
             //    TemperatureC = Random.Shared.Next(-20, 55),
             //    Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             //})
             //.ToArray();
-            new RulesService().Execute();
+            var response = await new RulesService().Execute();
+            return response;
+        }
+
+        [HttpGet("colors")]
+        public async Task<string> Colors(string data) {
+            //return Enumerable.Range(1, 5).Select(index => new RulesService {
+            //    Date = DateTime.Now.AddDays(index),
+            //    TemperatureC = Random.Shared.Next(-20, 55),
+            //    Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            //})
+            //.ToArray();
+            var response = await new RulesService().Colors(data);
+            return response;
         }
     }
 }

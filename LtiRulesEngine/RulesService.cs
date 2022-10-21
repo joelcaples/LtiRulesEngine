@@ -1,6 +1,10 @@
 //using LtiRulesEngine.dto;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using RulesEngine.Extensions;
 using RulesEngine.Models;
+using System;
 //using System.Data;
 using System.Dynamic;
 using System.Text.Json;
@@ -15,7 +19,7 @@ namespace LtiRulesEngine {
 
         //public string? Summary { get; set; }
 
-        public async void Execute() {
+        public async Task<string> Execute() {
 
             //string jsonData = File.ReadAllText("data/workflow-01.json");
             //var workflow = JsonSerializer.Deserialize<WorkflowDto>(jsonData);
@@ -77,7 +81,77 @@ namespace LtiRulesEngine {
             });
 
             Console.WriteLine($"Test outcome: {outcome}.");
+            return $"Test outcome: {outcome}.";
 
         }
+
+
+        public async Task<string> Colors(string data) {
+
+            var workflows = new List<Workflow>() {
+                new Workflow() {
+                    WorkflowName = "Color Rules",
+                    Rules = new List<Rule>() {
+                        new Rule() {
+                            RuleName = "If Orange then Red is required",
+                            SuccessEvent = "Red was added.",
+                            ErrorMessage = "Red was not added.",
+                            Expression = "colors.Any(c => c == \"red\")",
+                            RuleExpressionType = RuleExpressionType.LambdaExpression
+                        }
+                    }
+                }
+            };
+
+            var rulesEngine = new RulesEngine.RulesEngine(workflows.ToArray(), null);
+
+            //dynamic datas = new ExpandoObject();
+            //datas.colors = new List<string>() { "red" };
+
+            //string json = @"
+            //{
+            //    ""colors"": [
+            //        ""blue"",
+            //        ""green""
+            //    ]
+            //}";
+
+
+            var converter = new ExpandoObjectConverter();
+            var expando = JsonConvert.DeserializeObject<ExpandoObject>(data, converter);
+            if (expando == null)
+                return "Invalid data";
+
+            dynamic colorData = expando;
+
+            //JObject datas = JObject.Parse(json);
+
+            var inputs = new dynamic[] {
+                colorData
+            };
+
+            List<RuleResultTree> resultList = await rulesEngine.ExecuteAllRulesAsync("Color Rules", inputs);
+
+            bool outcome = false;
+
+            //Different ways to show test results:
+            outcome = resultList.TrueForAll(r => r.IsSuccess);
+
+            resultList.OnSuccess((eventName) => {
+                Console.WriteLine($"Result '{eventName}' is as expected.");
+                outcome = true;
+            });
+
+            var msg = System.Environment.NewLine;
+            resultList.OnFail(() => {
+                outcome = false;
+                msg += string.Join(System.Environment.NewLine, resultList.Select(r => r.Rule.ErrorMessage));
+            });
+
+            Console.WriteLine($"Test outcome: {outcome}." + msg);
+            return $"Test outcome: {outcome}." + msg;
+
+        }
+
     }
 }
