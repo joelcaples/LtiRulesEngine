@@ -1,3 +1,4 @@
+using LtiRulesEngine.dto;
 using Xunit.Abstractions;
 
 namespace LtiRulesEngine.Tests {
@@ -10,15 +11,33 @@ namespace LtiRulesEngine.Tests {
         }
 
         [Fact]
-        public async void Test1() {
+        public async void InvalidIngredientsFromJsonTest() {
             var rulesService = new RulesService();
             var result = await rulesService.Colors(getJson("test-01.json"));
 
             Assert.False(result.IsSuccess);
-            //Assert.Collection(result.Messages, msg => msg.Contains("Red is required for Orange"));
             Assert.Contains(result.Messages, msg => msg.Contains("Red is required for Orange"));
             Assert.Contains(result.Messages, msg => msg.Contains("Yellow is required for Orange"));
 
+            output.WriteLine($"Validation Passed?: {result.IsSuccess}");
+            result.Messages.ForEach(m => output.WriteLine(m));
+        }
+
+        [Fact]
+        public async void InvalidIngredientsTest() {
+            var rulesService = new RulesService();
+            var result = await rulesService.Colors(new ColorRecipe() {
+                Recipe = "orange",
+                Ingredients = new List<string>() {
+
+                }
+            });
+
+            Assert.False(result.IsSuccess);
+            Assert.Contains(result.Messages, msg => msg.Contains("Red is required for Orange"));
+            Assert.Contains(result.Messages, msg => msg.Contains("Yellow is required for Orange"));
+
+            output.WriteLine($"Validation Passed?: {result.IsSuccess}");
             result.Messages.ForEach(m => output.WriteLine(m));
         }
 

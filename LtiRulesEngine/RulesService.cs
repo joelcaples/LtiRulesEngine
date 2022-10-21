@@ -85,13 +85,17 @@ namespace LtiRulesEngine {
         }*/
 
         public async Task<RulesEngineResponse> Colors(string data) {
+            var result = await Colors(getDataObject(data));
+            return result;
+        }
+
+        public async Task<RulesEngineResponse> Colors(ColorRecipe recipe) {
 
             try {
 
                 var rulesEngine = GetRulesEngine();
-                var dataObj = getDataObject(data);
 
-                List<RuleResultTree> resultList = await rulesEngine.ExecuteAllRulesAsync("ColorRecipe", dataObj);
+                List<RuleResultTree> resultList = await rulesEngine.ExecuteAllRulesAsync("ColorRecipe", recipe);
 
                 var response = new RulesEngineResponse() {
                     IsSuccess = resultList.TrueForAll(r => r.IsSuccess)
