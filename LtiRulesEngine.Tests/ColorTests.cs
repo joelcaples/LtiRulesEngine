@@ -15,7 +15,9 @@ namespace LtiRulesEngine.Tests {
             var result = await rulesService.Colors(getJson("test-01.json"));
 
             Assert.False(result.IsSuccess);
-            Assert.Collection(result.Messages, msg => msg.Contains("Red was not added"));
+            //Assert.Collection(result.Messages, msg => msg.Contains("Red is required for Orange"));
+            Assert.Contains(result.Messages, msg => msg.Contains("Red is required for Orange"));
+            Assert.Contains(result.Messages, msg => msg.Contains("Yellow is required for Orange"));
 
             result.Messages.ForEach(m => output.WriteLine(m));
         }

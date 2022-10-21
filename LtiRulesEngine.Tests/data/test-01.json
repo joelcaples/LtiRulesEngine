@@ -1,5 +1,6 @@
 ﻿{
-  "colors": [
+  "recipe" : "orange",
+  "ingredients": [
     "blue",
     "green"
   ]

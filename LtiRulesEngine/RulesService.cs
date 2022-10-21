@@ -1,14 +1,12 @@
-//using LtiRulesEngine.dto;
+using System;
+using System.Dynamic;
+using System.Text.Json;
+
 using LtiRulesEngine.dto;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
 using RulesEngine.Extensions;
 using RulesEngine.Models;
-using System;
-//using System.Data;
-using System.Dynamic;
-using System.Text.Json;
 
 namespace LtiRulesEngine {
     public class RulesService {
@@ -20,7 +18,7 @@ namespace LtiRulesEngine {
 
         //public string? Summary { get; set; }
 
-        public async Task<string> Execute() {
+        /*public async Task<string> Execute() {
 
             //string jsonData = File.ReadAllText("data/workflow-01.json");
             //var workflow = JsonSerializer.Deserialize<WorkflowDto>(jsonData);
@@ -84,97 +82,96 @@ namespace LtiRulesEngine {
             Console.WriteLine($"Test outcome: {outcome}.");
             return $"Test outcome: {outcome}.";
 
-        }
-
+        }*/
 
         public async Task<RulesEngineResponse> Colors(string data) {
 
-            //var workflows = new List<Workflow>() {
-            //    new Workflow() {
-            //        WorkflowName = "Color Rules",
-            //        Rules = new List<Rule>() {
-            //            new Rule() {
-            //                RuleName = "If Orange then Red is required",
-            //                SuccessEvent = "Red was added.",
-            //                ErrorMessage = "Red was not added.",
-            //                Expression = "colors.Any(c => c == \"red\")",
-            //                RuleExpressionType = RuleExpressionType.LambdaExpression
-            //            }
-            //        }
-            //    }
-            //};
-
             try {
 
+                var rulesEngine = GetRulesEngine();
+                var dataObj = getDataObject(data);
 
-                var files = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), "../../../../"), "color-workflow.json", SearchOption.AllDirectories);
-                if (files == null || files.Length == 0)
-                    throw new Exception("Rules not found.");
-                var fileData = File.ReadAllText(files[0]);
+                List<RuleResultTree> resultList = await rulesEngine.ExecuteAllRulesAsync("ColorRecipe", dataObj);
 
-                var workflows = JsonConvert.DeserializeObject<List<Workflow>>(fileData);
-                if (workflows == null || workflows.Count == 0)
-                    throw new Exception("Workflows not found.");
-                var rulesEngine = new RulesEngine.RulesEngine(workflows.ToArray(), null);
-
-                //dynamic datas = new ExpandoObject();
-                //datas.colors = new List<string>() { "red" };
-
-                //string json = @"
-                //{
-                //    ""colors"": [
-                //        ""blue"",
-                //        ""green""
-                //    ]
-                //}";
-
-
-                var converter = new ExpandoObjectConverter();
-                var expando = JsonConvert.DeserializeObject<ExpandoObject>(data, converter);
-                if (expando == null)
-                    return new RulesEngineResponse() {
-                        ExceptionMessage = "Invalid Data"
-                    };
-
-                    dynamic colorData = expando;
-
-                    //JObject datas = JObject.Parse(json);
-
-                    var inputs = new dynamic[] {
-                    colorData
-                };
-
-                List<RuleResultTree> resultList = await rulesEngine.ExecuteAllRulesAsync("Color", inputs);
-
-                //bool outcome = false;
-
-                //Different ways to show test results:
-                //outcome = resultList.TrueForAll(r => r.IsSuccess);
                 var response = new RulesEngineResponse() {
                     IsSuccess = resultList.TrueForAll(r => r.IsSuccess)
                 };
 
                 resultList.OnSuccess((eventName) => {
                     Console.WriteLine($"Result '{eventName}' is as expected.");
-                    //outcome = true;
                 });
 
-                var msg = System.Environment.NewLine;
                 resultList.OnFail(() => {
-                    //outcome = false;
                     response.Messages.AddRange(resultList.Select(r => r.Rule.ErrorMessage));
                 });
-
-                //Console.WriteLine($"Test outcome: {outcome}." + msg);
-                //return $"Test outcome: {outcome}." + msg;
 
                 return response;
 
             } catch (Exception ex) {
+                Console.WriteLine(ex.ToString());
                 throw;
             }
         }
 
+        private RulesEngine.RulesEngine GetRulesEngine() {
+
+            var workflowFiles = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), "../../../../"), "color-workflow.json", SearchOption.AllDirectories);
+
+            if (workflowFiles == null || workflowFiles.Length == 0)
+                throw new Exception("Rules not found.");
+            var workflowData = File.ReadAllText(workflowFiles[0]);
+
+            var workflows = JsonConvert.DeserializeObject<List<Workflow>>(workflowData);
+            if (workflows == null || workflows.Count == 0)
+                throw new Exception("Workflows not found.");
+
+            return new RulesEngine.RulesEngine(workflows.ToArray(), null);
+        }
+
+        private ColorRecipe getDataObject(string data) {
+            var converter = new ExpandoObjectConverter();
+            var recipe = JsonConvert.DeserializeObject<ColorRecipe>(data, converter);
+            if (recipe == null)
+                throw new Exception("Invalid Data");
+            return recipe;
+        }
+
+        // EXAMPLE USING GENERIC OBJECT
+        //
+        //private dynamic getDataObject(string data) {
+        //    var converter = new ExpandoObjectConverter();
+        //    var expando = JsonConvert.DeserializeObject<ExpandoObject>(data, converter);
+        //    if (expando == null)
+        //        throw new Exception("Invalid Data");
+        //    //return new RulesEngineResponse() {
+        //    //    ExceptionMessage = "Invalid Data"
+        //    //};
+        //
+        //    dynamic colorData = expando;
+        //
+        //    var obj = new dynamic[] {
+        //        colorData
+        //    };
+        //
+        //    return obj;
+        //}
+
+        // EXAMPLE CREATING WORKFLOW IN MEMORY:
+        //
+        //var workflows = new List<Workflow>() {
+        //    new Workflow() {
+        //        WorkflowName = "Color Rules",
+        //        Rules = new List<Rule>() {
+        //            new Rule() {
+        //                RuleName = "If Orange then Red is required",
+        //                SuccessEvent = "Red was added.",
+        //                ErrorMessage = "Red was not added.",
+        //                Expression = "colors.Any(c => c == \"red\")",
+        //                RuleExpressionType = RuleExpressionType.LambdaExpression
+        //            }
+        //        }
+        //    }
+        //};
 
     }
 }

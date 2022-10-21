@@ -1,12 +1,19 @@
 ﻿[
   {
-    "WorkflowName": "Color",
+    "WorkflowName": "ColorRecipe",
     "Rules": [
       {
         "RuleName": "If Orange then Red is required",
         "SuccessEvent": "Red was added.",
-        "ErrorMessage": "Red was not added.",
-        "Expression": "colors.Any(c => c == \"red\")",
+        "ErrorMessage": "Red is required for Orange.",
+        "Expression": "recipe != \"orange\" OR ingredients.Any(c => c == \"red\")",
+        "RuleExpressionType": "LambdaExpression"
+      },
+      {
+        "RuleName": "If Orange then Yellow is required",
+        "SuccessEvent": "Yellow was added.",
+        "ErrorMessage": "Yellow is required for Orange.",
+        "Expression": "recipe != \"orange\" OR ingredients.Any(c => c == \"yellow\")",
         "RuleExpressionType": "LambdaExpression"
       }
     ]
