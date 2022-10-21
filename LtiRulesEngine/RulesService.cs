@@ -88,70 +88,84 @@ namespace LtiRulesEngine {
 
         public async Task<string> Colors(string data) {
 
-            var workflows = new List<Workflow>() {
-                new Workflow() {
-                    WorkflowName = "Color Rules",
-                    Rules = new List<Rule>() {
-                        new Rule() {
-                            RuleName = "If Orange then Red is required",
-                            SuccessEvent = "Red was added.",
-                            ErrorMessage = "Red was not added.",
-                            Expression = "colors.Any(c => c == \"red\")",
-                            RuleExpressionType = RuleExpressionType.LambdaExpression
-                        }
-                    }
-                }
-            };
+            //var workflows = new List<Workflow>() {
+            //    new Workflow() {
+            //        WorkflowName = "Color Rules",
+            //        Rules = new List<Rule>() {
+            //            new Rule() {
+            //                RuleName = "If Orange then Red is required",
+            //                SuccessEvent = "Red was added.",
+            //                ErrorMessage = "Red was not added.",
+            //                Expression = "colors.Any(c => c == \"red\")",
+            //                RuleExpressionType = RuleExpressionType.LambdaExpression
+            //            }
+            //        }
+            //    }
+            //};
 
-            var rulesEngine = new RulesEngine.RulesEngine(workflows.ToArray(), null);
-
-            //dynamic datas = new ExpandoObject();
-            //datas.colors = new List<string>() { "red" };
-
-            //string json = @"
-            //{
-            //    ""colors"": [
-            //        ""blue"",
-            //        ""green""
-            //    ]
-            //}";
+            try {
 
 
-            var converter = new ExpandoObjectConverter();
-            var expando = JsonConvert.DeserializeObject<ExpandoObject>(data, converter);
-            if (expando == null)
-                return "Invalid data";
+                var files = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), "../../../../"), "color-workflow.json", SearchOption.AllDirectories);
+                if (files == null || files.Length == 0)
+                    throw new Exception("Rules not found.");
+                var fileData = File.ReadAllText(files[0]);
 
-            dynamic colorData = expando;
+                var workflows = JsonConvert.DeserializeObject<List<Workflow>>(fileData);
+                if (workflows == null || workflows.Count == 0)
+                    throw new Exception("Workflows not found.");
+                var rulesEngine = new RulesEngine.RulesEngine(workflows.ToArray(), null);
 
-            //JObject datas = JObject.Parse(json);
+                //dynamic datas = new ExpandoObject();
+                //datas.colors = new List<string>() { "red" };
 
-            var inputs = new dynamic[] {
+                //string json = @"
+                //{
+                //    ""colors"": [
+                //        ""blue"",
+                //        ""green""
+                //    ]
+                //}";
+
+
+                var converter = new ExpandoObjectConverter();
+                var expando = JsonConvert.DeserializeObject<ExpandoObject>(data, converter);
+                if (expando == null)
+                    return "Invalid data";
+
+                dynamic colorData = expando;
+
+                //JObject datas = JObject.Parse(json);
+
+                var inputs = new dynamic[] {
                 colorData
             };
 
-            List<RuleResultTree> resultList = await rulesEngine.ExecuteAllRulesAsync("Color Rules", inputs);
+                List<RuleResultTree> resultList = await rulesEngine.ExecuteAllRulesAsync("Color", inputs);
 
-            bool outcome = false;
+                bool outcome = false;
 
-            //Different ways to show test results:
-            outcome = resultList.TrueForAll(r => r.IsSuccess);
+                //Different ways to show test results:
+                outcome = resultList.TrueForAll(r => r.IsSuccess);
 
-            resultList.OnSuccess((eventName) => {
-                Console.WriteLine($"Result '{eventName}' is as expected.");
-                outcome = true;
-            });
+                resultList.OnSuccess((eventName) => {
+                    Console.WriteLine($"Result '{eventName}' is as expected.");
+                    outcome = true;
+                });
 
-            var msg = System.Environment.NewLine;
-            resultList.OnFail(() => {
-                outcome = false;
-                msg += string.Join(System.Environment.NewLine, resultList.Select(r => r.Rule.ErrorMessage));
-            });
+                var msg = System.Environment.NewLine;
+                resultList.OnFail(() => {
+                    outcome = false;
+                    msg += string.Join(System.Environment.NewLine, resultList.Select(r => r.Rule.ErrorMessage));
+                });
 
-            Console.WriteLine($"Test outcome: {outcome}." + msg);
-            return $"Test outcome: {outcome}." + msg;
-
+                Console.WriteLine($"Test outcome: {outcome}." + msg);
+                return $"Test outcome: {outcome}." + msg;
+            } catch (Exception ex) {
+                throw;
+            }
         }
+
 
     }
 }

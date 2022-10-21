@@ -1,0 +1,14 @@
+﻿[
+  {
+    "WorkflowName": "Color",
+    "Rules": [
+      {
+        "RuleName": "If Orange then Red is required",
+        "SuccessEvent": "Red was added.",
+        "ErrorMessage": "Red was not added.",
+        "Expression": "colors.Any(c => c == \"red\")",
+        "RuleExpressionType": "LambdaExpression"
+      }
+    ]
+  }
+] 
