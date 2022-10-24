@@ -36,6 +36,13 @@
         "ErrorMessage": "At least 20% White was not present.",
         "Expression": "recipe != \"pink\" OR ingredients.Any(i => i.color == \"white\" and i.pct >= 20)",
         "RuleExpressionType": "LambdaExpression"
+      },
+      {
+        "RuleName": "Percentages must total 100",
+        "SuccessEvent": "Percentages were 100%",
+        "ErrorMessage": "Percentages did not total 100%",
+        "Expression": "ingredients.Sum(i => i.pct) == 100",
+        "RuleExpressionType": "LambdaExpression"
       }
 
     ]

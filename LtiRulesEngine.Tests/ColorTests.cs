@@ -102,5 +102,23 @@ namespace LtiRulesEngine.Tests {
             var fileData = File.ReadAllText(files[0]);
             return fileData;
         }
+
+        [Fact]
+        public async void MustTotal100PctTest() {
+            var rulesService = new RulesService();
+            var result = await rulesService.Colors(new ColorRecipe() {
+                Recipe = "orange",
+                Ingredients = new List<Ingredient>() {
+                    new Ingredient() { Color = "blue", Pct = 10 },
+                    new Ingredient() { Color = "green", Pct = 250 }
+                }
+            });
+
+            Assert.False(result.IsSuccess);
+            Assert.Contains(result.Messages, msg => msg.Contains("Percentages did not total 100%"));
+
+            output.WriteLine($"Validation Passed?: {result.IsSuccess}");
+            result.Messages.ForEach(m => output.WriteLine(m));
+        }
     }
 }
