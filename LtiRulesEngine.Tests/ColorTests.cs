@@ -29,9 +29,9 @@ namespace LtiRulesEngine.Tests {
             var rulesService = new RulesService();
             var result = await rulesService.Colors(new ColorRecipe() {
                 Recipe = "orange",
-                Ingredients = new List<string>() {
-                    "blue",
-                    "green"
+                Ingredients = new List<Ingredient>() {
+                    new Ingredient() { Color = "blue", Pct = 50 },
+                    new Ingredient() { Color = "green", Pct = 50 }
                 }
             });
 
@@ -39,6 +39,57 @@ namespace LtiRulesEngine.Tests {
             Assert.Contains(result.Messages, msg => msg.Contains("Red is required for Orange"));
             Assert.Contains(result.Messages, msg => msg.Contains("Yellow is required for Orange"));
             Assert.Contains(result.Messages, msg => msg.Contains("Blue is not allowed for Orange"));
+
+            output.WriteLine($"Validation Passed?: {result.IsSuccess}");
+            result.Messages.ForEach(m => output.WriteLine(m));
+        }
+
+        [Fact]
+        public async void OrangeTest() {
+            var rulesService = new RulesService();
+            var result = await rulesService.Colors(new ColorRecipe() {
+                Recipe = "orange",
+                Ingredients = new List<Ingredient>() {
+                    new Ingredient() { Color = "red", Pct = 50 },
+                    new Ingredient() { Color = "yellow", Pct = 50 }
+                }
+            });
+
+            output.WriteLine($"Validation Passed?: {result.IsSuccess}");
+            result.Messages.ForEach(m => output.WriteLine(m));
+
+            Assert.True(result.IsSuccess);
+        }
+
+        [Fact]
+        public async void MinimumPctTest() {
+            var rulesService = new RulesService();
+            var result = await rulesService.Colors(new ColorRecipe() {
+                Recipe = "pink",
+                Ingredients = new List<Ingredient>() {
+                    new Ingredient() { Color = "red", Pct = 80 },
+                    new Ingredient() { Color = "white", Pct = 20 }
+                }
+            });
+
+            Assert.True(result.IsSuccess);
+
+            output.WriteLine($"Validation Passed?: {result.IsSuccess}");
+            result.Messages.ForEach(m => output.WriteLine(m));
+        }
+
+        [Fact]
+        public async void MinimumPctFailTest() {
+            var rulesService = new RulesService();
+            var result = await rulesService.Colors(new ColorRecipe() {
+                Recipe = "pink",
+                Ingredients = new List<Ingredient>() {
+                    new Ingredient() { Color = "red", Pct = 90 },
+                    new Ingredient() { Color = "white", Pct = 10 }
+                }
+            });
+
+            Assert.False(result.IsSuccess);
 
             output.WriteLine($"Validation Passed?: {result.IsSuccess}");
             result.Messages.ForEach(m => output.WriteLine(m));

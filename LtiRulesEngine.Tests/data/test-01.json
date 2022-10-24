@@ -1,7 +1,7 @@
 ﻿{
   "recipe" : "orange",
   "ingredients": [
-    "blue",
-    "green"
+    { "color": "blue", "pct": 50},
+    { "color": "green", "pct": 50 }
   ]
 }

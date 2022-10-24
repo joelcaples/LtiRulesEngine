@@ -6,23 +6,38 @@
         "RuleName": "If Orange then Red is required",
         "SuccessEvent": "Red was added.",
         "ErrorMessage": "Red is required for Orange.",
-        "Expression": "recipe != \"orange\" OR ingredients.Any(c => c == \"red\")",
+        "Expression": "recipe != \"orange\" OR ingredients.Any(i => i.color == \"red\")",
         "RuleExpressionType": "LambdaExpression"
       },
       {
         "RuleName": "If Orange then Yellow is required",
         "SuccessEvent": "Yellow was added.",
         "ErrorMessage": "Yellow is required for Orange.",
-        "Expression": "recipe != \"orange\" OR ingredients.Any(c => c == \"yellow\")",
+        "Expression": "recipe != \"orange\" OR ingredients.Any(i => i.color == \"yellow\")",
         "RuleExpressionType": "LambdaExpression"
       },
       {
         "RuleName": "If Orange then Blue is not allowed",
         "SuccessEvent": "Blue was not present.",
         "ErrorMessage": "Blue is not allowed for Orange.",
-        "Expression": "recipe == \"orange\" AND !ingredients.Any(c => c == \"blue\")",
+        "Expression": "recipe != \"orange\" OR !ingredients.Any(i => i.color == \"blue\")",
+        "RuleExpressionType": "LambdaExpression"
+      },
+      {
+        "RuleName": "If Pink then Red is required",
+        "SuccessEvent": "Red was added.",
+        "ErrorMessage": "Red is required for Pink.",
+        "Expression": "recipe != \"pink\" OR ingredients.Any(i => i.color == \"red\")",
+        "RuleExpressionType": "LambdaExpression"
+      },
+      {
+        "RuleName": "If Pink then White must be at least 20%",
+        "SuccessEvent": "At least 20% White was present.",
+        "ErrorMessage": "At least 20% White was not present.",
+        "Expression": "recipe != \"pink\" OR ingredients.Any(i => i.color == \"white\" and i.pct >= 20)",
         "RuleExpressionType": "LambdaExpression"
       }
+
     ]
   }
 ] 
