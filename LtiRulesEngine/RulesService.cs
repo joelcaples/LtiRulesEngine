@@ -98,16 +98,20 @@ namespace LtiRulesEngine {
                 List<RuleResultTree> resultList = await rulesEngine.ExecuteAllRulesAsync("ColorRecipe", recipe);
 
                 var response = new RulesEngineResponse() {
-                    IsSuccess = resultList.TrueForAll(r => r.IsSuccess)
+                    IsSuccess = resultList.TrueForAll(r => r.IsSuccess),
                 };
 
-                resultList.OnSuccess((eventName) => {
-                    Console.WriteLine($"Result '{eventName}' is as expected.");
-                });
+                response.Messages.AddRange(resultList
+                    .Where(r => !r.IsSuccess && !response.Messages.Contains(r.ExceptionMessage))
+                    .Select(r => r.ExceptionMessage));
 
-                resultList.OnFail(() => {
-                    response.Messages.AddRange(resultList.Select(r => r.Rule.ErrorMessage));
-                });
+                //resultList.OnSuccess((eventName) => {
+                //    Console.WriteLine($"Result '{eventName}' is as expected.");
+                //});
+
+                //resultList.OnFail(() => {
+                //    response.Messages.AddRange(resultList.Select(r => r.Rule.ErrorMessage));
+                //});
 
                 return response;
 

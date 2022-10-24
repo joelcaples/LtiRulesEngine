@@ -18,6 +18,7 @@ namespace LtiRulesEngine.Tests {
             Assert.False(result.IsSuccess);
             Assert.Contains(result.Messages, msg => msg.Contains("Red is required for Orange"));
             Assert.Contains(result.Messages, msg => msg.Contains("Yellow is required for Orange"));
+            Assert.Contains(result.Messages, msg => msg.Contains("Blue is not allowed for Orange"));
 
             output.WriteLine($"Validation Passed?: {result.IsSuccess}");
             result.Messages.ForEach(m => output.WriteLine(m));
@@ -29,13 +30,15 @@ namespace LtiRulesEngine.Tests {
             var result = await rulesService.Colors(new ColorRecipe() {
                 Recipe = "orange",
                 Ingredients = new List<string>() {
-
+                    "blue",
+                    "green"
                 }
             });
 
             Assert.False(result.IsSuccess);
             Assert.Contains(result.Messages, msg => msg.Contains("Red is required for Orange"));
             Assert.Contains(result.Messages, msg => msg.Contains("Yellow is required for Orange"));
+            Assert.Contains(result.Messages, msg => msg.Contains("Blue is not allowed for Orange"));
 
             output.WriteLine($"Validation Passed?: {result.IsSuccess}");
             result.Messages.ForEach(m => output.WriteLine(m));
