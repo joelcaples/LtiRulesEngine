@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using LtiRulesEngine.models;
+using Newtonsoft.Json;
 using RulesEngine.Models;
+using System.Text;
 
 namespace LtiRulesEngine.util {
     public class RulesEngineUtil {

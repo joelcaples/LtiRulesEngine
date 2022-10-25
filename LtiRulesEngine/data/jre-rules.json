@@ -1,0 +1,16 @@
+﻿{
+  "name": "rule-456",
+  "conditions": {
+    "all": [
+      {
+        "fact": "data",
+        "operator": "equal-ignore-case",
+        "value": "toast",
+        "path": "bar"
+      }
+    ]
+  },
+  "action": {
+    "type": "rule-456"
+  }
+}
