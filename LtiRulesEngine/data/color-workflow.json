@@ -1,6 +1,6 @@
 ﻿[
   {
-    "WorkflowName": "ColorRecipe",
+    "WorkflowName": "Color",
     "Rules": [
       {
         "RuleName": "If Orange then Red is required",

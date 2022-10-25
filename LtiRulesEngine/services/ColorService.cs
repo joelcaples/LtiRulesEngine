@@ -1,27 +1,32 @@
 using System;
 using LtiRulesEngine.models;
+using LtiRulesEngine.util;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using RulesEngine.Models;
 
-namespace LtiRulesEngine {
+namespace LtiRulesEngine.services
+{
 
-    public class RulesService {
-
-        public async Task<RulesEngineResponse> Colors(string data) {
-            var result = await Colors(getDataObject(data));
+    public class ColorService
+    {
+        public async Task<RulesEngineResponse> Colors(string data)
+        {
+            var result = await Colors(FromJson(data));
             return result;
         }
 
-        public async Task<RulesEngineResponse> Colors(ColorRecipe recipe) {
+        public async Task<RulesEngineResponse> Colors(ColorRecipe recipe)
+        {
+            try
+            {
 
-            try {
+                var rulesEngine = RulesEngineUtil.GetRulesEngine("color");
 
-                var rulesEngine = GetRulesEngine();
+                List<RuleResultTree> resultList = await rulesEngine.ExecuteAllRulesAsync("Color", recipe);
 
-                List<RuleResultTree> resultList = await rulesEngine.ExecuteAllRulesAsync("ColorRecipe", recipe);
-
-                var response = new RulesEngineResponse() {
+                var response = new RulesEngineResponse()
+                {
                     IsSuccess = resultList.TrueForAll(r => r.IsSuccess),
                 };
 
@@ -39,28 +44,16 @@ namespace LtiRulesEngine {
 
                 return response;
 
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine(ex.ToString());
                 throw;
             }
         }
 
-        private RulesEngine.RulesEngine GetRulesEngine() {
-
-            var workflowFiles = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), "../../../../"), "color-workflow.json", SearchOption.AllDirectories);
-
-            if (workflowFiles == null || workflowFiles.Length == 0)
-                throw new Exception("Rules not found.");
-            var workflowData = File.ReadAllText(workflowFiles[0]);
-
-            var workflows = JsonConvert.DeserializeObject<List<Workflow>>(workflowData);
-            if (workflows == null || workflows.Count == 0)
-                throw new Exception("Workflows not found.");
-
-            return new RulesEngine.RulesEngine(workflows.ToArray(), null);
-        }
-
-        private ColorRecipe getDataObject(string data) {
+        private ColorRecipe FromJson(string data)
+        {
             var converter = new ExpandoObjectConverter();
             var recipe = JsonConvert.DeserializeObject<ColorRecipe>(data, converter);
             if (recipe == null)

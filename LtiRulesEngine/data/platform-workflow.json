@@ -1,6 +1,6 @@
 ﻿[
   {
-    "WorkflowName": "ColorRecipe",
+    "WorkflowName": "Platform",
     "Rules": [
       {
         "RuleName": "RequireCreditReleaseWhenPctOwnershipGt25",

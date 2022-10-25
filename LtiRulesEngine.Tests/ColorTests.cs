@@ -1,4 +1,5 @@
 using LtiRulesEngine.models;
+using LtiRulesEngine.services;
 using Xunit.Abstractions;
 
 namespace LtiRulesEngine.Tests {
@@ -12,7 +13,7 @@ namespace LtiRulesEngine.Tests {
 
         [Fact]
         public async void InvalidIngredientsFromJsonTest() {
-            var rulesService = new RulesService();
+            var rulesService = new ColorService();
             var result = await rulesService.Colors(getJson("test-01.json"));
 
             Assert.False(result.IsSuccess);
@@ -26,7 +27,7 @@ namespace LtiRulesEngine.Tests {
 
         [Fact]
         public async void InvalidIngredientsTest() {
-            var rulesService = new RulesService();
+            var rulesService = new ColorService();
             var result = await rulesService.Colors(new ColorRecipe() {
                 Recipe = "orange",
                 Ingredients = new List<Ingredient>() {
@@ -46,7 +47,7 @@ namespace LtiRulesEngine.Tests {
 
         [Fact]
         public async void OrangeTest() {
-            var rulesService = new RulesService();
+            var rulesService = new ColorService();
             var result = await rulesService.Colors(new ColorRecipe() {
                 Recipe = "orange",
                 Ingredients = new List<Ingredient>() {
@@ -63,7 +64,7 @@ namespace LtiRulesEngine.Tests {
 
         [Fact]
         public async void MinimumPctTest() {
-            var rulesService = new RulesService();
+            var rulesService = new ColorService();
             var result = await rulesService.Colors(new ColorRecipe() {
                 Recipe = "pink",
                 Ingredients = new List<Ingredient>() {
@@ -80,7 +81,7 @@ namespace LtiRulesEngine.Tests {
 
         [Fact]
         public async void MinimumPctFailTest() {
-            var rulesService = new RulesService();
+            var rulesService = new ColorService();
             var result = await rulesService.Colors(new ColorRecipe() {
                 Recipe = "pink",
                 Ingredients = new List<Ingredient>() {
@@ -105,7 +106,7 @@ namespace LtiRulesEngine.Tests {
 
         [Fact]
         public async void MustTotal100PctTest() {
-            var rulesService = new RulesService();
+            var rulesService = new ColorService();
             var result = await rulesService.Colors(new ColorRecipe() {
                 Recipe = "orange",
                 Ingredients = new List<Ingredient>() {

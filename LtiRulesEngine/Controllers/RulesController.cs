@@ -1,4 +1,5 @@
 using LtiRulesEngine.models;
+using LtiRulesEngine.services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LtiRulesEngine.Controllers {
@@ -29,7 +30,7 @@ namespace LtiRulesEngine.Controllers {
             //    Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             //})
             //.ToArray();
-            var response = await new RulesService().Colors(data);
+            var response = await new ColorService().Colors(data);
             return response;
         }
     }

@@ -1,6 +1,5 @@
 ﻿namespace LtiRulesEngine.models {
-    public class OriginationsContext {
-        public string ContextType { get; set; } = "Undefined";
+    public partial class PlatformContext {
         public bool CreditRelease { get; set; } = false;
         public int? PctOwnership { get; set; } = null;
     }
