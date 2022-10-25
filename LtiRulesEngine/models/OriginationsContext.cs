@@ -1,4 +1,4 @@
-﻿namespace LtiRulesEngine.dto {
+﻿namespace LtiRulesEngine.models {
     public class OriginationsContext {
         public string ContextType { get; set; } = "Undefined";
         public bool CreditRelease { get; set; } = false;

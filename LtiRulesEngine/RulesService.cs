@@ -1,5 +1,5 @@
 using System;
-using LtiRulesEngine.dto;
+using LtiRulesEngine.models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using RulesEngine.Models;

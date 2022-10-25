@@ -1,4 +1,4 @@
-﻿namespace LtiRulesEngine.dto {
+﻿namespace LtiRulesEngine.models {
     public class RulesEngineResponse {
         public bool IsSuccess = false;
         public List<string> Messages = new List<string>();

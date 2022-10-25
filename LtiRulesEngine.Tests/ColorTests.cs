@@ -1,4 +1,4 @@
-using LtiRulesEngine.dto;
+using LtiRulesEngine.models;
 using Xunit.Abstractions;
 
 namespace LtiRulesEngine.Tests {

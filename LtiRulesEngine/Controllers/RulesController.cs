@@ -1,4 +1,4 @@
-using LtiRulesEngine.dto;
+using LtiRulesEngine.models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LtiRulesEngine.Controllers {
