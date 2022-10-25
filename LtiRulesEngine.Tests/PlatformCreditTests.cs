@@ -4,11 +4,11 @@ using Xunit.Abstractions;
 
 namespace LtiRulesEngine.Tests {
 
-    public class PlatformTests {
+    public class PlatformCreditTests {
 
         private readonly ITestOutputHelper output;
 
-        public PlatformTests(ITestOutputHelper output) {
+        public PlatformCreditTests(ITestOutputHelper output) {
             this.output = output;
         }
 

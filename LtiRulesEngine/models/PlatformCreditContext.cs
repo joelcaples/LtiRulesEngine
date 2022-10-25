@@ -1,6 +1,6 @@
 ﻿namespace LtiRulesEngine.models {
     public partial class PlatformContext {
-        public bool DropDown { get; set; } = false;
-        public string? DeclineReason { get; set; } = null;
+        public bool CreditRelease { get; set; } = false;
+        public int? PctOwnership { get; set; } = null;
     }
 }

@@ -6,7 +6,14 @@
         "RuleName": "RequireCreditReleaseWhenPctOwnershipGt25",
         "SuccessEvent": "Credit Release was required and required",
         "ErrorMessage": "Credit Release must be true when Ownership % > 25",
-        "Expression": "contexttype != \"originations\" OR pctownership <= 25 OR creditrelease",
+        "Expression": "contexttype != \"originations\" OR pctownership == null OR pctownership <= 25 OR creditrelease",
+        "RuleExpressionType": "LambdaExpression"
+      },
+      {
+        "RuleName": "RequireDeclineReasonsWhenApplicationIsDeclined",
+        "SuccessEvent": "Decline Reasons were included if Application was declined",
+        "ErrorMessage": "Reasons must be provided when Application is declined",
+        "Expression": "contexttype != \"originations\" OR !isdeclined OR declinereasons.count() > 0",
         "RuleExpressionType": "LambdaExpression"
       }
     ]
