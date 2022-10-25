@@ -67,7 +67,7 @@ namespace LtiRulesEngine.services {
                     switch (a.Operator) {
                         case "equal-ignore-case":
                         default:
-                            sb.Append($"{a.Fact}.ToLower() == \"{a.Path?.ToLower()}\"");
+                            sb.Append($"\"{a.Value?.ToLower()}\" == data.{ a.Path }.ToLower() ");
                             break;
                     }
                 }
@@ -78,7 +78,7 @@ namespace LtiRulesEngine.services {
                         new Rule() {
                             RuleName = jreRule.Name,
                             //SuccessEvent = ,
-                            //ErrorMessage = "",
+                            ErrorMessage = "FAAAAIIIILLL...",
                             Expression = sb.ToString(),
                             RuleExpressionType = RuleExpressionType.LambdaExpression
                         }

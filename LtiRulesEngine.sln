@@ -5,7 +5,7 @@ VisualStudioVersion = 17.3.32804.467
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LtiRulesEngine", "LtiRulesEngine\LtiRulesEngine.csproj", "{20603A76-E1CA-40BF-BD2A-626B298CA71B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LtiRulesEngine.Tests", "LtiRulesEngine.Tests\LtiRulesEngine.Tests.csproj", "{B5FE4518-6DBD-41BF-9BDC-C012E0FB56A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LtiRulesEngine.Tests", "LtiRulesEngine.Tests\LtiRulesEngine.Tests.csproj", "{B5FE4518-6DBD-41BF-9BDC-C012E0FB56A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

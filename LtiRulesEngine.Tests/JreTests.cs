@@ -15,7 +15,7 @@ namespace LtiRulesEngine.Tests {
         [Fact]
         public async void JreTestPass() {
             var rulesService = new JreService();
-            var data = "{ \"data\" : \"bar\" }";
+            var data = "{\"data\": {\"foo\": \"show\",\"bar\": \"toast\"}}";
             var jreRules = new List<string>() { getJson("jre-rules.json") };
             var result = await rulesService.JreRules(data, jreRules);
 
@@ -28,7 +28,7 @@ namespace LtiRulesEngine.Tests {
         [Fact]
         public async void JreTestFail() {
             var rulesService = new JreService();
-            var data = "{ \"data\" : \"notbar\" }";
+            var data = "{\"data\": {\"foo\": \"show\",\"bar\": \"nottoast\"}}";
             var jreRules = new List<string>() { getJson("jre-rules.json") };
             var result = await rulesService.JreRules(data, jreRules);
 
