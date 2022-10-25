@@ -1,0 +1,14 @@
+﻿[
+  {
+    "WorkflowName": "ColorRecipe",
+    "Rules": [
+      {
+        "RuleName": "RequireCreditReleaseWhenPctOwnershipGt25",
+        "SuccessEvent": "Credit Release was required and required",
+        "ErrorMessage": "Credit Release must be true when Ownership % > 25",
+        "Expression": "contexttype != \"originations\" OR pctownership <= 25 OR creditrelease",
+        "RuleExpressionType": "LambdaExpression"
+      }
+    ]
+  }
+] 
